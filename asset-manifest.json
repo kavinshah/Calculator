@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/%3Chttps://kavinshah.github.io/Calculator/%3E/static/css/main.284a72e8.css",
+    "main.js": "/%3Chttps://kavinshah.github.io/Calculator/%3E/static/js/main.8408c7fa.js",
+    "static/js/787.5891d3d7.chunk.js": "/%3Chttps://kavinshah.github.io/Calculator/%3E/static/js/787.5891d3d7.chunk.js",
+    "index.html": "/%3Chttps://kavinshah.github.io/Calculator/%3E/index.html",
+    "main.284a72e8.css.map": "/%3Chttps://kavinshah.github.io/Calculator/%3E/static/css/main.284a72e8.css.map",
+    "main.8408c7fa.js.map": "/%3Chttps://kavinshah.github.io/Calculator/%3E/static/js/main.8408c7fa.js.map",
+    "787.5891d3d7.chunk.js.map": "/%3Chttps://kavinshah.github.io/Calculator/%3E/static/js/787.5891d3d7.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.284a72e8.css",
+    "static/js/main.8408c7fa.js"
+  ]
+}
