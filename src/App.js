@@ -160,33 +160,23 @@ class Buttons extends React.Component
 	render() {
 		return (
 			<div>
-				<div className='row'>
-						<button id="clear" value='AC' className='extraWideButton' style={{backgroundColor:"#CB0107"}} onClick={this.props.handleClear}>AC</button>
-						<button id="divide" value='/' className='operatorStyle' onClick={this.props.handleOperator}>/</button>
-				</div>
-				<div className='row'>
-						<button id="seven" value='7' className='' onClick={this.props.handleClick}>7</button>
-					<button id="eight" value='8' className='' onClick={this.props.handleClick}>8</button>
-						<button id="nine" value='9' className='' onClick={this.props.handleClick}>9</button>
-						<button id="multiply" value='*' className='operatorStyle' onClick={this.props.handleOperator}>X</button>
-				</div>
-				<div className='row'>
-					<button id="four" value='4' className='' onClick={this.props.handleClick}>4</button>
-					<button id="five" value='5' className='' onClick={this.props.handleClick}>5</button>
-					<button id="six" value='6' className='' onClick={this.props.handleClick}>6</button>
-					<button id="subtract" value='-' className='operatorStyle' onClick={this.props.handleMinus}>-</button>
-				</div>
-				<div className='row'>
-					<button id="one" value='1' className='col-xs-10' onClick={this.props.handleClick}>1</button>
-					<button id="two" value='2' className='col-xs-10' onClick={this.props.handleClick}>2</button>
-					<button id="three" value='3' className='col-xs-10' onClick={this.props.handleClick}>3</button>
-					<button id="add" value='+' className='operatorStyle' onClick={this.props.handleOperator}>+</button>
-				</div>
-				<div className='row'>
-					<button id="zero" value='0' className='col-xs-20 wideButton' onClick={this.props.handleClick}>0</button>
-					<button id="decimal" value='.' className='col-xs-10' onClick={this.props.handleDecimal}>.</button>
-					<button id="equals" value='=' className=' co-xs-10' style={{backgroundColor:"#365481"}} onClick={this.props.handleEqualTo}>=</button>
-				</div>
+				<button id="clear" value='AC' className='extraWideButton' style={{backgroundColor:"#CB0107"}} onClick={this.props.handleClear}>AC</button>
+				<button id="divide" value='/' className='operatorStyle' onClick={this.props.handleOperator}>/</button>
+				<button id="seven" value='7' onClick={this.props.handleClick}>7</button>
+				<button id="eight" value='8' onClick={this.props.handleClick}>8</button>
+				<button id="nine" value='9' onClick={this.props.handleClick}>9</button>
+				<button id="multiply" value='*' className='operatorStyle' onClick={this.props.handleOperator}>X</button>
+				<button id="four" value='4' onClick={this.props.handleClick}>4</button>
+				<button id="five" value='5' onClick={this.props.handleClick}>5</button>
+				<button id="six" value='6' onClick={this.props.handleClick}>6</button>
+				<button id="add" value='+' className='operatorStyle' onClick={this.props.handleOperator}>+</button>
+				<button id="one" value='1' onClick={this.props.handleClick}>1</button>
+				<button id="two" value='2' onClick={this.props.handleClick}>2</button>
+				<button id="three" value='3' onClick={this.props.handleClick}>3</button>
+				<button id="subtract" value='-' className='operatorStyle' onClick={this.props.handleMinus}>-</button>
+				<button id="zero" value='0' className='wideButton' onClick={this.props.handleClick}>0</button>
+				<button id="decimal" value='.' onClick={this.props.handleDecimal}>.</button>
+				<button id="equals" value='=' style={{backgroundColor:"#365481"}} onClick={this.props.handleEqualTo}>=</button>
 			</div>
 		);
 	}
