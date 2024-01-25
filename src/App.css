@@ -1,0 +1,48 @@
+#root {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body {
+  background: #c2c2d6;
+}
+
+button{
+	height: 50px;
+	width: 50px;
+	background-color: black;
+	color: white;
+}
+
+input{
+	height:50px;
+	width:194px;
+	background-color:black;
+	color:white;
+	text-align:right;
+}
+
+.wideButton{
+	height: 50px;
+	width: 100px;
+}
+
+.extraWideButton{
+	height: 50px;
+	width: 150px;
+}
+
+.operatorStyle{
+	background-color: grey;
+}
+
+.calculator {
+  
+}
+
+.formulaScreen {
+  
+}
+
