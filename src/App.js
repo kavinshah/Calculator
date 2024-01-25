@@ -143,7 +143,7 @@ class Display extends React.Component
 	render(){
 		return (
 			<div>
-				<input id="display" value={this.props.result}></input>
+				<input className='formulaScreen' id="display" value={this.props.result}></input>
 			</div>
 		);
 	}
