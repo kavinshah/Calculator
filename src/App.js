@@ -1,185 +1,122 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
 
-class Calculator extends React.Component
-{
-	constructor(props){
-		super(props);
-		this.state = {
-			currentValue:'0',
-			operator:null,
-			result:'0',
-			hasDecimal:false
-		};
-			
-		this.handleClick=this.handleClick.bind(this);
-		this.handleOperator=this.handleOperator.bind(this);
-		this.handleEqualTo=this.handleEqualTo.bind(this);
-		this.handleClear=this.handleClear.bind(this);
-		this.handleDecimal=this.handleDecimal.bind(this);
-		this.handleMinus=this.handleMinus.bind(this);
-	}
+function Calculator(){
+	const [currentValue, setCurrentValue] = useState('0');
+	const [operator, setOperator] = useState(null);
+	const [result, setResult] = useState('0');
+	const [hasDecimal, setHasDecimal] = useState(false);
 	
-	handleClick(event){
-		const newClick = event.target.value;
-		this.setState((state)=>({
-			currentValue: isNaN(Number(state.currentValue+newClick))
-			? state.currentValue
-			: (state.hasDecimal === true
-				? state.currentValue+newClick
-				: Number(state.currentValue+newClick))
-			}));
-		//console.log("After handleClick", this.state);
-	}
+	const handleClick = (event) => {
+		let newClick = event.target.value;
+		setCurrentValue(isNaN(Number(currentValue+newClick))
+			? currentValue
+			: (hasDecimal === true
+				? currentValue+newClick
+				: Number(currentValue+newClick)));
+	};
 	
-	handleMinus(event){
-		if(this.state.currentValue==='0'){
+	const handleMinus = (event) => {
+		if(currentValue==='0'){
 			// minus as operand
-			this.setState((state)=>({
-				currentValue : '-',
-				operator : state.operator,
-				result : state.result,
-				hasDecimal:false
-				}));
+			setCurrentValue('-');
+			setHasDecimal(false);
 		}
 		else{
-			this.setState((state)=>({
-				currentValue:'0',
-				operator : '-',
-				result : (state.operator === null
-						? state.currentValue	//minus as a first operator
-						: eval(state.result+state.operator+state.currentValue)), // minus as successive operator
-				hasDecimal:false
-				}));
+			setCurrentValue('0');
+			setOperator('-');
+			setResult(operator === null
+						? currentValue	//minus as a first operator
+						: eval(result+operator+currentValue));
+			setHasDecimal(false);
 		}
 		//console.log("After handleMinus", this.state);
 	}
 	
-	handleOperator(event){
+	const handleOperator = (event) => {
 		const newClick = event.target.value;
 		console.log(newClick);
 		//handle change in operators
-		if(this.state.result!=='0' && this.state.currentValue==='0'){
-			this.setState((state)=>({
-				operator:newClick,
-				currentValue:'0',
-				result:state.result,
-				hasDecimal:false
-			}));
+		if(result!=='0' && currentValue==='0'){
+			setOperator(newClick);
+			setCurrentValue('0');
+			setHasDecimal(false);
 		}
 		//handle consecutive operators
-		else if(this.state.result !== '0'
-			&& this.state.currentValue !== '0'
-			&& this.state.operator!=null){
-			this.setState((state)=>({
-					result: eval(state.result
-								+state.operator
-								+state.currentValue),
-					currentValue:'0',
-					operator:newClick,
-					hasDecimal:false
-			}));
+		else if(result !== '0'
+			&& currentValue !== '0'
+			&& operator!=null){
+			setResult(eval(result+operator+currentValue));
+			setCurrentValue('0');
+			setOperator(newClick);
+			setHasDecimal(false);
 		}
 		else{
-			this.setState((state)=>({
-				operator:newClick,
-				currentValue:'0',
-				result:state.currentValue,
-				hasDecimal:false
-			}));
+			setOperator(newClick);
+			setCurrentValue('0');
+			setResult(currentValue);
+			setHasDecimal(false);
 		}
 		//console.log("After handleOperator:",this.state);
 	}
 	
-	handleEqualTo(event){
-		const result=eval(this.state.result
-						+this.state.operator
-						+this.state.currentValue);
-		
-		this.setState((state)=>({
-			currentValue:result,
-			operator:null,
-			result:result
-		}));
+	const handleEqualTo = (event) => {
+		let result=eval(result+operator+currentValue);
+		setCurrentValue(result);
+		setOperator(null);
 		//console.log("After handleEqualTo:", this.state);
 	}
 	
-	handleClear(event){
-		this.setState({
-			currentValue:'0',
-			operandOne:null,
-			operandTwo:null,
-			operator:null,
-			result:'0',
-			hasDecimal:false
-	  });
+	const handleClear = (event) => {
+		setCurrentValue('0');
+		setOperator(null);
+		setResult('0');
+		setHasDecimal(false);
 	}
 	
-	handleDecimal(event){
-		this.setState((state)=>({
-			currentValue:state.hasDecimal?state.currentValue:(state.currentValue+'.'),
-			hasDecimal:true
-		}));
+	const handleDecimal = (event) => {
+		setCurrentValue(hasDecimal?currentValue:(currentValue+'.'));
+		setHasDecimal(true);
 	}
 	
-	render(){
-		return (
-			<div className='calculator'>
-				<Display result={this.state.currentValue} />
-				<Buttons handleClick={this.handleClick} handleOperator={this.handleOperator} handleEqualTo={this.handleEqualTo} handleClear={this.handleClear} handleDecimal={this.handleDecimal} handleMinus={this.handleMinus} />
-			</div>
-		);
-	}
+	return (
+		<div className='calculator'>
+			<Display result={currentValue} />
+			<Buttons handleClick={handleClick} handleOperator={handleOperator} handleEqualTo={handleEqualTo} handleClear={handleClear} handleDecimal={handleDecimal} handleMinus={handleMinus} />
+		</div>
+	);
 }
 
-class Display extends React.Component
-{
-	constructor(props){
-		super(props);
-		this.state = {
-		};
-	}
-	
-	render(){
-		return (
-			<div>
-				<input className='formulaScreen' id="display" value={this.props.result}></input>
-			</div>
-		);
-	}
+function Display({result}){
+	return (
+		<div>
+			<input className='formulaScreen' id="display" value={result}></input>
+		</div>
+	);
 }
 
-class Buttons extends React.Component
-{
-	constructor(props){
-		super(props);
-			this.state={
-			};
-		}
-
-	render() {
-		return (
-			<div>
-				<button id="clear" value='AC' className='extraWideButton' style={{backgroundColor:"#CB0107"}} onClick={this.props.handleClear}>AC</button>
-				<button id="divide" value='/' className='operatorStyle' onClick={this.props.handleOperator}>/</button>
-				<button id="seven" value='7' onClick={this.props.handleClick}>7</button>
-				<button id="eight" value='8' onClick={this.props.handleClick}>8</button>
-				<button id="nine" value='9' onClick={this.props.handleClick}>9</button>
-				<button id="multiply" value='*' className='operatorStyle' onClick={this.props.handleOperator}>X</button>
-				<button id="four" value='4' onClick={this.props.handleClick}>4</button>
-				<button id="five" value='5' onClick={this.props.handleClick}>5</button>
-				<button id="six" value='6' onClick={this.props.handleClick}>6</button>
-				<button id="add" value='+' className='operatorStyle' onClick={this.props.handleOperator}>+</button>
-				<button id="one" value='1' onClick={this.props.handleClick}>1</button>
-				<button id="two" value='2' onClick={this.props.handleClick}>2</button>
-				<button id="three" value='3' onClick={this.props.handleClick}>3</button>
-				<button id="subtract" value='-' className='operatorStyle' onClick={this.props.handleMinus}>-</button>
-				<button id="zero" value='0' className='wideButton' onClick={this.props.handleClick}>0</button>
-				<button id="decimal" value='.' onClick={this.props.handleDecimal}>.</button>
-				<button id="equals" value='=' style={{backgroundColor:"#365481"}} onClick={this.props.handleEqualTo}>=</button>
-			</div>
-		);
-	}
+function Buttons({handleClear, handleOperator, handleClick, handleMinus, handleDecimal, handleEqualTo}){
+	return (
+		<div>
+			<button id="clear" value='AC' className='extraWideButton' style={{backgroundColor:"#CB0107"}} onClick={handleClear}>AC</button>
+			<button id="divide" value='/' className='operatorStyle' onClick={handleOperator}>/</button>
+			<button id="seven" value='7' onClick={handleClick}>7</button>
+			<button id="eight" value='8' onClick={handleClick}>8</button>
+			<button id="nine" value='9' onClick={handleClick}>9</button>
+			<button id="multiply" value='*' className='operatorStyle' onClick={handleOperator}>X</button>
+			<button id="four" value='4' onClick={handleClick}>4</button>
+			<button id="five" value='5' onClick={handleClick}>5</button>
+			<button id="six" value='6' onClick={handleClick}>6</button>
+			<button id="add" value='+' className='operatorStyle' onClick={handleOperator}>+</button>
+			<button id="one" value='1' onClick={handleClick}>1</button>
+			<button id="two" value='2' onClick={handleClick}>2</button>
+			<button id="three" value='3' onClick={handleClick}>3</button>
+			<button id="subtract" value='-' className='operatorStyle' onClick={handleMinus}>-</button>
+			<button id="zero" value='0' className='wideButton' onClick={handleClick}>0</button>
+			<button id="decimal" value='.' onClick={handleDecimal}>.</button>
+			<button id="equals" value='=' style={{backgroundColor:"#365481"}} onClick={handleEqualTo}>=</button>
+		</div>
+	);
 }
 
 export default Calculator;
