@@ -20,114 +20,137 @@ function Display({val}){
 }
 
 function Buttons({displayValue, handleDisplayValue}){
-	//const [currentValue, setCurrentValue] = useState('0');
 	const [result, setResult] = useState('0');
-	const [operator, setOperator] = useState(null);
-	const [hasDecimal, setHasDecimal] = useState(false);
-
-	const handleClick = (event) => {
-		let newClick = event.target.value;
-		handleDisplayValue(isNaN(Number(displayValue+newClick))
-			? displayValue
-			: (hasDecimal === true
-				? displayValue+newClick
-				: Number(displayValue+newClick)));
-	};
+	const [currentExpression, setCurrentExpression] = useState('0');
 	
-	const handleMinus = (event) => {
-		if(displayValue==='0'){
-			// minus as operand
-			handleDisplayValue('-');
-			setHasDecimal(false);
-		}
-		else{
-			handleDisplayValue('0');
-			setOperator('-');
-			setResult(operator === null
-						? displayValue	//minus as a first operator
-						: eval(result+operator+displayValue));
-			setHasDecimal(false);
-		}
-		//console.log("After handleMinus", this.state);
-	}
-	
-	const handleOperator = (event) => {
-		const newClick = event.target.value;
-		console.log(newClick);
-		//handle change in operators
-		if(result!=='0' && displayValue==='0'){
-			setOperator(newClick);
-			handleDisplayValue('0');
-			setHasDecimal(false);
-		}
-		//handle consecutive operators
-		else if(result !== '0'
-			&& displayValue !== '0'
-			&& operator!=null){
-			setResult((result) => eval(result+operator+displayValue));
-			handleDisplayValue('0');
-			setOperator(newClick);
-			setHasDecimal(false);
-		}
-		else{
-			setOperator(newClick);
-			handleDisplayValue('0');
-			setResult(displayValue);
-			setHasDecimal(false);
-		}
-		//console.log("After handleOperator:",this.state);
-	}
-	
-	const handleEqualTo = (event) => {
-		//console.log("result:", result);
-		if(operator===null)
-		{
-			handleDisplayValue(result);
-			return;
-		}
-		
-		//console.log("result:", result, "\toperator:", operator, "\tcurrentvalue:", currentValue);
-		//console.log("eval:", eval(result+operator+currentValue));
-		setResult((result) => eval(result+operator+displayValue));
-		handleDisplayValue(result);
-		setOperator(null);
-		//console.log("After handleEqualTo:", this.state);
-	}
-	
-	const handleClear = (event) => {
+	const handleClearClick = (event) => {
 		handleDisplayValue('0');
-		setOperator(null);
 		setResult('0');
-		setHasDecimal(false);
+		setCurrentExpression('0');
 	}
 	
-	const handleDecimal = (event) => {
-		if(!hasDecimal)
+	const handleDigitClick = (event) => {
+		let newClick = event.target.value;
+		//console.log("digit clicked:", newClick);
+		handleDisplayValue(newClick);
+
+		if(currentExpression==='0')
+			setCurrentExpression(newClick);
+		else if(!isNaN(currentExpression))
+			setCurrentExpression((currentExpression)=> currentExpression + newClick);
+		else if(currentExpression==='+' || currentExpression==='-'|| currentExpression==='*' || currentExpression==='/')
 		{
-			handleDisplayValue(displayValue+'.');
+			setResult((result)=> result + currentExpression);
+			setCurrentExpression(newClick);
 		}
-		setHasDecimal(true);
+		else if(currentExpression.includes('.'))
+		{
+			setCurrentExpression((currentExpression)=> currentExpression + newClick);
+		}
+		else
+		{
+			//console.log("handleDigitClick : unknown current expression:", currentExpression);
+		}
+
+		//console.log("current expression:", currentExpression);
+		//console.log("result:", result);
+
+	};
+
+	const handleOperatorClick = (event) => {
+		let operator = event.target.value;
+		//console.log("operator clicked:", operator);
+		if(currentExpression === '0')
+		{
+			if(result !== '0')
+				setCurrentExpression(operator)
+			else if(result==='0' && operator==='-')
+				setCurrentExpression(operator);
+		}
+		else if(!isNaN(currentExpression))
+		{
+			if(result === '0')
+			{
+				setResult(currentExpression);
+			}
+			else 
+			{
+				setResult((result)=> result + currentExpression);
+			}
+			setCurrentExpression(operator);
+		}
+		else if(currentExpression==='+' || currentExpression==='-'|| currentExpression==='*' || currentExpression==='/')
+		{
+			setCurrentExpression(operator);
+		}
+		else if(currentExpression.includes("."))
+		{
+			setResult((result)=> result + (currentExpression.replace(".", "")));
+			setCurrentExpression(operator);
+			//console.log(currentExpression);
+		}
+		else
+		{
+			//console.log("handleOperatorClick : unknown current expression:", currentExpression);
+		}
+		//console.log("current expression:", currentExpression);
+		//console.log("result:", result);
 	}
-	
+
+	const handleEqualToClick = (event) => {
+		//console.log("handleEqualToClick");
+		if(!isNaN(currentExpression))
+		{
+			handleDisplayValue(eval(result+currentExpression));
+			setResult((result) => eval(result+currentExpression));
+		}
+		else
+		{
+			handleDisplayValue(eval(result));
+			setResult((result) => eval(result));
+		}
+		setCurrentExpression('0');
+		//console.log("current expression:", currentExpression);
+		//console.log("result:", result);
+	};
+
+	const handleDecimalClick = (event) => {
+		if(currentExpression === '0')
+		{
+			setCurrentExpression((currentExpression) => currentExpression + '.');
+		}
+		else if(!isNaN(currentExpression))
+		{
+			if(!currentExpression.includes('.')){
+				setCurrentExpression((currentExpression) => currentExpression + '.');
+			}
+		}
+		else if(currentExpression==='+' || currentExpression==='-'|| currentExpression==='*' || currentExpression==='/')
+		{
+			setResult((result) => result + currentExpression);
+			setCurrentExpression('0.');
+		}
+	};
+
 	return (
 		<div>
-			<button id="clear" value='AC' className='extraWideButton' style={{backgroundColor:"#CB0107"}} onClick={handleClear}>AC</button>
-			<button id="divide" value='/' className='operatorStyle' onClick={handleOperator}>/</button>
-			<button id="seven" value='7' onClick={handleClick}>7</button>
-			<button id="eight" value='8' onClick={handleClick}>8</button>
-			<button id="nine" value='9' onClick={handleClick}>9</button>
-			<button id="multiply" value='*' className='operatorStyle' onClick={handleOperator}>X</button>
-			<button id="four" value='4' onClick={handleClick}>4</button>
-			<button id="five" value='5' onClick={handleClick}>5</button>
-			<button id="six" value='6' onClick={handleClick}>6</button>
-			<button id="add" value='+' className='operatorStyle' onClick={handleOperator}>+</button>
-			<button id="one" value='1' onClick={handleClick}>1</button>
-			<button id="two" value='2' onClick={handleClick}>2</button>
-			<button id="three" value='3' onClick={handleClick}>3</button>
-			<button id="subtract" value='-' className='operatorStyle' onClick={handleMinus}>-</button>
-			<button id="zero" value='0' className='wideButton' onClick={handleClick}>0</button>
-			<button id="decimal" value='.' onClick={handleDecimal}>.</button>
-			<button id="equals" value='=' style={{backgroundColor:"#365481"}} onClick={handleEqualTo}>=</button>
+			<button id="clear" value='AC' className='extraWideButton' style={{backgroundColor:"#CB0107"}} onClick={handleClearClick}>AC</button>
+			<button id="divide" value='/' className='operatorStyle' onClick={handleOperatorClick}>/</button>
+			<button id="seven" value='7' onClick={handleDigitClick}>7</button>
+			<button id="eight" value='8' onClick={handleDigitClick}>8</button>
+			<button id="nine" value='9' onClick={handleDigitClick}>9</button>
+			<button id="multiply" value='*' className='operatorStyle' onClick={handleOperatorClick}>X</button>
+			<button id="four" value='4' onClick={handleDigitClick}>4</button>
+			<button id="five" value='5' onClick={handleDigitClick}>5</button>
+			<button id="six" value='6' onClick={handleDigitClick}>6</button>
+			<button id="add" value='+' className='operatorStyle' onClick={handleOperatorClick}>+</button>
+			<button id="one" value='1' onClick={handleDigitClick}>1</button>
+			<button id="two" value='2' onClick={handleDigitClick}>2</button>
+			<button id="three" value='3' onClick={handleDigitClick}>3</button>
+			<button id="subtract" value='-' className='operatorStyle' onClick={handleOperatorClick}>-</button>
+			<button id="zero" value='0' className='wideButton' onClick={handleDigitClick}>0</button>
+			<button id="decimal" value='.' onClick={handleDecimalClick}>.</button>
+			<button id="equals" value='=' style={{backgroundColor:"#365481"}} onClick={handleEqualToClick}>=</button>
 		</div>
 	);
 }
