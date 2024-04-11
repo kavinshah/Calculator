@@ -1,0 +1,22 @@
+possible item for a new event: [digit, operator, decimal, equalTo, AC]
+
+if curr='0', event=digit, set curr to event
+if curr='0', event=operator, only set curr to operator if operator=='-'
+if curr='0', event=decimal, append decimal to curr
+if curr='0', event=equalto, returns NaN
+
+if curr=digit, event=digit, append to curr
+if curr=digit, event=operator, append curr to result and event to curr
+if curr=digit, event=decimal, append decimal to curr
+if curr=digit, event=equalto, append curr to result and evaluate result. clear curr
+
+if curr=operator, event=digit, move operator to result and event to curr
+if curr=operator, event=operator, move event to curr i.e. change to operator in curr
+if curr=operator, event=decimal, move operator to result, append decimal to curr (as 0.)
+if curr=operator, event=equalto, clear operator and evaluate result
+
+if curr=num.decimal, event=digit, append digit to curr
+if curr=num.decimal, event=operator, move curr to result without decimal and move operator to curr
+if curr=num.decimal, event=decimal, do nothing
+if curr=num.decimal, event=equalto, append 0 to curr and move curr to result. Evaluate result. clear curr
+
