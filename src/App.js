@@ -53,7 +53,7 @@ function Buttons({displayValue, handleDisplayValue}){
 	
 	const handleOperator = (event) => {
 		const newClick = event.target.value;
-		//console.log(newClick);
+		console.log(newClick);
 		//handle change in operators
 		if(result!=='0' && displayValue==='0'){
 			setOperator(newClick);
