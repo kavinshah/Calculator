@@ -2,32 +2,50 @@ import React, {useState} from 'react';
 import './App.css';
 
 function Calculator(){
-	const [currentValue, setCurrentValue] = useState('0');
-	const [operator, setOperator] = useState(null);
+	const [displayValue, setDisplayValue] = useState(0);
+	return (
+		<div className='calculator'>
+			<Display val={displayValue} />
+			<Buttons displayValue={displayValue} handleDisplayValue={setDisplayValue} />
+		</div>
+	);
+}
+
+function Display({val}){
+	return (
+		<div>
+			<input className='formulaScreen' id="display" value={val} readOnly />
+		</div>
+	);
+}
+
+function Buttons({displayValue, handleDisplayValue}){
+	//const [currentValue, setCurrentValue] = useState('0');
 	const [result, setResult] = useState('0');
+	const [operator, setOperator] = useState(null);
 	const [hasDecimal, setHasDecimal] = useState(false);
-	
+
 	const handleClick = (event) => {
 		let newClick = event.target.value;
-		setCurrentValue(isNaN(Number(currentValue+newClick))
-			? currentValue
+		handleDisplayValue(isNaN(Number(displayValue+newClick))
+			? displayValue
 			: (hasDecimal === true
-				? currentValue+newClick
-				: Number(currentValue+newClick)));
+				? displayValue+newClick
+				: Number(displayValue+newClick)));
 	};
 	
 	const handleMinus = (event) => {
-		if(currentValue==='0'){
+		if(displayValue==='0'){
 			// minus as operand
-			setCurrentValue('-');
+			handleDisplayValue('-');
 			setHasDecimal(false);
 		}
 		else{
-			setCurrentValue('0');
+			handleDisplayValue('0');
 			setOperator('-');
 			setResult(operator === null
-						? currentValue	//minus as a first operator
-						: eval(result+operator+currentValue));
+						? displayValue	//minus as a first operator
+						: eval(result+operator+displayValue));
 			setHasDecimal(false);
 		}
 		//console.log("After handleMinus", this.state);
@@ -35,67 +53,62 @@ function Calculator(){
 	
 	const handleOperator = (event) => {
 		const newClick = event.target.value;
-		console.log(newClick);
+		//console.log(newClick);
 		//handle change in operators
-		if(result!=='0' && currentValue==='0'){
+		if(result!=='0' && displayValue==='0'){
 			setOperator(newClick);
-			setCurrentValue('0');
+			handleDisplayValue('0');
 			setHasDecimal(false);
 		}
 		//handle consecutive operators
 		else if(result !== '0'
-			&& currentValue !== '0'
+			&& displayValue !== '0'
 			&& operator!=null){
-			setResult(eval(result+operator+currentValue));
-			setCurrentValue('0');
+			setResult((result) => eval(result+operator+displayValue));
+			handleDisplayValue('0');
 			setOperator(newClick);
 			setHasDecimal(false);
 		}
 		else{
 			setOperator(newClick);
-			setCurrentValue('0');
-			setResult(currentValue);
+			handleDisplayValue('0');
+			setResult(displayValue);
 			setHasDecimal(false);
 		}
 		//console.log("After handleOperator:",this.state);
 	}
 	
 	const handleEqualTo = (event) => {
-		let result=eval(result+operator+currentValue);
-		setCurrentValue(result);
+		//console.log("result:", result);
+		if(operator===null)
+		{
+			handleDisplayValue(result);
+			return;
+		}
+		
+		//console.log("result:", result, "\toperator:", operator, "\tcurrentvalue:", currentValue);
+		//console.log("eval:", eval(result+operator+currentValue));
+		setResult((result) => eval(result+operator+displayValue));
+		handleDisplayValue(result);
 		setOperator(null);
 		//console.log("After handleEqualTo:", this.state);
 	}
 	
 	const handleClear = (event) => {
-		setCurrentValue('0');
+		handleDisplayValue('0');
 		setOperator(null);
 		setResult('0');
 		setHasDecimal(false);
 	}
 	
 	const handleDecimal = (event) => {
-		setCurrentValue(hasDecimal?currentValue:(currentValue+'.'));
+		if(!hasDecimal)
+		{
+			handleDisplayValue(displayValue+'.');
+		}
 		setHasDecimal(true);
 	}
 	
-	return (
-		<div className='calculator'>
-			<Display result={currentValue} />
-			<Buttons handleClick={handleClick} handleOperator={handleOperator} handleEqualTo={handleEqualTo} handleClear={handleClear} handleDecimal={handleDecimal} handleMinus={handleMinus} />
-		</div>
-	);
-}
-
-function Display({result}){
-	return (
-		<div>
-			<input className='formulaScreen' id="display" value={result}></input>
-		</div>
-	);
-}
-
-function Buttons({handleClear, handleOperator, handleClick, handleMinus, handleDecimal, handleEqualTo}){
 	return (
 		<div>
 			<button id="clear" value='AC' className='extraWideButton' style={{backgroundColor:"#CB0107"}} onClick={handleClear}>AC</button>
